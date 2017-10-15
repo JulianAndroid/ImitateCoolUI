@@ -7,7 +7,8 @@
     tools:context="io.julian.imitatecoolui.sample.MainActivity">
 
     <io.julian.imitate.jikelike.widget.FavorView
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:paddingLeft="3dp"/>
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:paddingLeft="10dp"/>
 </FrameLayout>
