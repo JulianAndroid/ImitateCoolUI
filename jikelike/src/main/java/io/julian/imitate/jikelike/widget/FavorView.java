@@ -1,6 +1,7 @@
 package io.julian.imitate.jikelike.widget;
 
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -68,7 +69,37 @@ public class FavorView extends ViewGroup {
             widthSize = Math.max(selectedWidth, shiningWidth) + pleft + pright;
             heightSize = selectedHeight + shiningHeight / 2 + ptop + pbottom;
         } else {
-            throw new UnsupportedOperationException("暂时不支持EXACTLY");
+            widthSize = MeasureSpec.getSize(widthMeasureSpec);
+            heightSize = MeasureSpec.getSize(heightMeasureSpec);
+            final int contentWidth = widthSize - pleft - pright;
+            final int contentHeight = heightSize - ptop - pbottom;
+
+            BitmapDrawable selectedDrawable = (BitmapDrawable) mLikeSelected.getDrawable();
+            BitmapDrawable shiningDrawable = (BitmapDrawable) mLikeSelectedShining.getDrawable();
+            float selectedWidth = selectedDrawable.getIntrinsicWidth();
+            float selectedHeight = selectedDrawable.getIntrinsicHeight();
+            float shiningWidth = shiningDrawable.getIntrinsicWidth();
+            float shiningHeight = shiningDrawable.getIntrinsicHeight();
+
+            final int drawableWidth = Math.max(selectedDrawable.getIntrinsicWidth(),
+                    shiningDrawable.getIntrinsicWidth());
+            final int drawableHeight = selectedDrawable.getIntrinsicHeight()
+                    + shiningDrawable.getIntrinsicHeight() / 2;
+
+            float desireAspect = Math.min(1.0f * contentWidth / drawableWidth,
+                    1.0f * contentHeight / drawableHeight);
+
+            selectedWidth *= desireAspect;
+            selectedHeight *= desireAspect;
+            shiningWidth *= desireAspect;
+            shiningHeight *= desireAspect;
+
+            mLikeSelectedShining.measure(
+                    MeasureSpec.makeMeasureSpec((int) (shiningWidth), MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec((int) (shiningHeight), MeasureSpec.EXACTLY));
+            mLikeSelected.measure(
+                    MeasureSpec.makeMeasureSpec((int) (selectedWidth), MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec((int) (selectedHeight), MeasureSpec.EXACTLY));
         }
         setMeasuredDimension(widthSize, heightSize);
     }
@@ -76,25 +107,21 @@ public class FavorView extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         final int width = getMeasuredWidth();
-        final int height = getMeasuredHeight();
         final int childLeft = getPaddingLeft();
         final int childTop = getPaddingTop();
-        final int childWidth = width - getPaddingLeft() - getPaddingRight();
-        final int childHeight = height - getPaddingTop() - getPaddingBottom();
 
-        final int selectedShiningLeft = (width - mLikeSelectedShining.getMeasuredWidth()) / 2;
-        final int selectedShiningTop = childTop;
-        final int selectedShiningWidth = mLikeSelectedShining.getMeasuredWidth();
-        final int selectedShiningHeight = mLikeSelectedShining.getMeasuredHeight();
-        mLikeSelectedShining.layout(selectedShiningLeft, selectedShiningTop,
-                selectedShiningLeft + selectedShiningWidth,
-                selectedShiningTop + selectedShiningHeight);
+        final int shiningLeft = childLeft / 2 + (width - mLikeSelectedShining.getMeasuredWidth()) / 2;
+        final int shiningTop = childTop;
+        final int shiningWidth = mLikeSelectedShining.getMeasuredWidth();
+        final int shiningHeight = mLikeSelectedShining.getMeasuredHeight();
+        mLikeSelectedShining.layout(shiningLeft, shiningTop, shiningLeft + shiningWidth,
+                shiningTop + shiningHeight);
 
-        final int selectedLeft = childLeft;
-        final int selectedTop = childTop + mLikeSelectedShining.getMeasuredHeight() / 2;
-        final int selectedWidth = mLikeSelected.getMeasuredWidth();
-        final int selectedHeight = mLikeSelected.getMeasuredHeight();
-        mLikeSelected.layout(selectedLeft, selectedTop, selectedLeft + selectedWidth,
-                selectedTop + selectedHeight);
+        final int selectLeft = childLeft / 2 + (width - mLikeSelected.getMeasuredWidth()) / 2;
+        final int selectTop = childTop + shiningHeight / 2;
+        final int selectWidth = mLikeSelected.getMeasuredWidth();
+        final int selectHeight = mLikeSelected.getMeasuredHeight();
+        mLikeSelected.layout(selectLeft, selectTop, selectLeft + selectWidth,
+                selectTop + selectHeight);
     }
 }
