@@ -29,6 +29,8 @@ public class FavorView extends ViewGroup {
 
     private long mDuration = DEFAULT_DURATION;
 
+    private boolean isLikeSelected;
+
     public FavorView(Context context) {
         this(context, null);
     }
@@ -45,7 +47,6 @@ public class FavorView extends ViewGroup {
 
     private void createLikeView() {
         mLikeSelected = new ImageView(getContext());
-        mLikeSelected.setImageResource(R.drawable.ic_messages_like_selected);
         addView(mLikeSelected);
 
         mLikeShining = new ImageView(getContext());
@@ -54,6 +55,16 @@ public class FavorView extends ViewGroup {
 
         mLikeRing = new LikeRingView(getContext());
         addView(mLikeRing);
+
+        if (isLikeSelected) {
+            mLikeSelected.setImageResource(R.drawable.ic_messages_like_selected);
+            mLikeShining.setVisibility(VISIBLE);
+            mLikeRing.setVisibility(VISIBLE);
+        } else {
+            mLikeSelected.setImageResource(R.drawable.ic_messages_like_unselected);
+            mLikeShining.setVisibility(INVISIBLE);
+            mLikeRing.setVisibility(INVISIBLE);
+        }
     }
 
     @Override
@@ -135,24 +146,49 @@ public class FavorView extends ViewGroup {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                setLikeSelected();
+                handleActionDown();
                 break;
             case MotionEvent.ACTION_UP:
-                setLikeUnselected();
+                toggle();
                 break;
         }
         return true;
     }
 
-    private void setLikeSelected() {
+    private void handleActionDown() {
         mLikeSelected.animate().scaleX(0.6f).scaleY(0.6f).setDuration(200).start();
         mLikeShining.setPivotX(mLikeShining.getMeasuredWidth() / 2);
         mLikeShining.setPivotY(mLikeShining.getMeasuredHeight());
         mLikeShining.animate().scaleX(0.6f).scaleY(0.6f).setDuration(200).start();
     }
 
-    private void setLikeUnselected() {
+    private void toggle() {
+        setLikeSelected(!isLikeSelected);
+    }
 
+    private void setLikeSelected(boolean selected) {
+        if (isLikeSelected != selected) {
+            isLikeSelected = selected;
+
+            if (selected) {
+                mLikeSelected.setImageResource(R.drawable.ic_messages_like_selected);
+                mLikeShining.setImageResource(R.drawable.ic_messages_like_selected_shining);
+                mLikeSelected.setVisibility(VISIBLE);
+                mLikeShining.setVisibility(VISIBLE);
+                mLikeRing.setVisibility(VISIBLE);
+
+                animateLikeSelected();
+            } else {
+                mLikeSelected.setImageResource(R.drawable.ic_messages_like_unselected);
+                mLikeShining.setVisibility(INVISIBLE);
+                mLikeRing.setVisibility(INVISIBLE);
+
+                animateLikeUnselected();
+            }
+        }
+    }
+
+    private void animateLikeSelected() {
         ValueAnimator likeSelectedAnimator = ValueAnimator.ofFloat(1f);
         likeSelectedAnimator.setInterpolator(new OvershootInterpolator(4.0f));
         likeSelectedAnimator.setDuration(mDuration);
@@ -181,5 +217,18 @@ public class FavorView extends ViewGroup {
         animatorSet.playTogether(likeSelectedAnimator, likeShiningAnimator);
         animatorSet.start();
         mLikeRing.startAnimatorSet();
+    }
+
+    private void animateLikeUnselected() {
+        ValueAnimator likeSelectedAnimator = ValueAnimator.ofFloat(0.7f, 1f);
+        likeSelectedAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float scale = (float) animation.getAnimatedValue();
+                mLikeSelected.setScaleX(scale);
+                mLikeSelected.setScaleY(scale);
+            }
+        });
+        likeSelectedAnimator.start();
     }
 }
