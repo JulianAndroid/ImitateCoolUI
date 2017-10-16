@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="horizontal"
     tools:context="io.julian.imitatecoolui.sample.MainActivity">
-
-    <io.julian.imitate.jikelike.widget.LikeRingView
-        android:layout_width="40dp"
-        android:layout_height="40dp"/>
 
     <io.julian.imitate.jikelike.widget.FavorView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
-</FrameLayout>
+        android:layout_height="wrap_content"/>
+
+    <io.julian.imitate.jikelike.widget.PopTextView
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        app:afterNum="25"
+        app:beforeNum="11"/>
+</LinearLayout>
