@@ -1,5 +1,7 @@
 package io.julian.imitate.jikelike.widget;
 
+import android.animation.AnimatorSet;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -19,9 +21,13 @@ public class FavorView extends ViewGroup {
     private static final float SHINING_RING_DETAL = 1.5F;
     private static final float SHINING_CONTENT_DETAL = 2.25F;
 
+    private static final long DEFAULT_DURATION = 200L;
+
     private ImageView mLikeSelected;
     private ImageView mLikeShining;
     private LikeRingView mLikeRing;
+
+    private long mDuration = DEFAULT_DURATION;
 
     public FavorView(Context context) {
         this(context, null);
@@ -146,11 +152,34 @@ public class FavorView extends ViewGroup {
     }
 
     private void setLikeUnselected() {
-        mLikeSelected.animate().scaleX(1f).scaleY(1f).setDuration(200)
-                .setInterpolator(new OvershootInterpolator(4.0f))
-                .start();
-        mLikeShining.animate().scaleX(1f).scaleY(1f).setDuration(200)
-                .setInterpolator(new OvershootInterpolator(4.0f))
-                .start();
+
+        ValueAnimator likeSelectedAnimator = ValueAnimator.ofFloat(1f);
+        likeSelectedAnimator.setInterpolator(new OvershootInterpolator(4.0f));
+        likeSelectedAnimator.setDuration(mDuration);
+        likeSelectedAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float scale = (float) animation.getAnimatedValue();
+                mLikeSelected.setScaleX(scale);
+                mLikeSelected.setScaleY(scale);
+            }
+        });
+
+        ValueAnimator likeShiningAnimator = ValueAnimator.ofFloat(1f);
+        likeShiningAnimator.setInterpolator(new OvershootInterpolator(4.0f));
+        likeShiningAnimator.setDuration((long) (mDuration * 1.5));
+        likeShiningAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float scale = (float) animation.getAnimatedValue();
+                mLikeShining.setScaleX(scale);
+                mLikeShining.setScaleY(scale);
+            }
+        });
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(likeSelectedAnimator, likeShiningAnimator);
+        animatorSet.start();
+        mLikeRing.startAnimatorSet();
     }
 }
