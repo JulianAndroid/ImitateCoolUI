@@ -6,9 +6,12 @@
     android:layout_height="match_parent"
     tools:context="io.julian.imitatecoolui.sample.MainActivity">
 
+    <io.julian.imitate.jikelike.widget.LikeRingView
+        android:layout_width="40dp"
+        android:layout_height="40dp"/>
+
     <io.julian.imitate.jikelike.widget.FavorView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_gravity="center"
-        android:paddingLeft="10dp"/>
+        android:layout_gravity="center"/>
 </FrameLayout>

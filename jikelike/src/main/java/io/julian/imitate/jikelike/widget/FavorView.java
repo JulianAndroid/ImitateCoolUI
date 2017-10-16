@@ -2,8 +2,9 @@ package io.julian.imitate.jikelike.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
+import android.view.MotionEvent;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 
 import io.julian.imitate.jikelike.R;
@@ -20,7 +21,7 @@ public class FavorView extends ViewGroup {
 
     private ImageView mLikeSelected;
     private ImageView mLikeShining;
-    private View mLikeRing;
+    private LikeRingView mLikeRing;
 
     public FavorView(Context context) {
         this(context, null);
@@ -45,7 +46,7 @@ public class FavorView extends ViewGroup {
         mLikeShining.setImageResource(R.drawable.ic_messages_like_selected_shining);
         addView(mLikeShining);
 
-        mLikeRing = new View(getContext());
+        mLikeRing = new LikeRingView(getContext());
         addView(mLikeRing);
     }
 
@@ -124,4 +125,32 @@ public class FavorView extends ViewGroup {
                 shiningTop + shiningHeight);
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                setLikeSelected();
+                break;
+            case MotionEvent.ACTION_UP:
+                setLikeUnselected();
+                break;
+        }
+        return true;
+    }
+
+    private void setLikeSelected() {
+        mLikeSelected.animate().scaleX(0.6f).scaleY(0.6f).setDuration(200).start();
+        mLikeShining.setPivotX(mLikeShining.getMeasuredWidth() / 2);
+        mLikeShining.setPivotY(mLikeShining.getMeasuredHeight());
+        mLikeShining.animate().scaleX(0.6f).scaleY(0.6f).setDuration(200).start();
+    }
+
+    private void setLikeUnselected() {
+        mLikeSelected.animate().scaleX(1f).scaleY(1f).setDuration(200)
+                .setInterpolator(new OvershootInterpolator(4.0f))
+                .start();
+        mLikeShining.animate().scaleX(1f).scaleY(1f).setDuration(200)
+                .setInterpolator(new OvershootInterpolator(4.0f))
+                .start();
+    }
 }
