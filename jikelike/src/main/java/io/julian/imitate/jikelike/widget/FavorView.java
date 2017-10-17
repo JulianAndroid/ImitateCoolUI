@@ -1,8 +1,10 @@
 package io.julian.imitate.jikelike.widget;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
@@ -31,6 +33,31 @@ public class FavorView extends ViewGroup {
 
     private boolean isLikeSelected;
 
+    private OnFavorViewClickListener mOnFavorViewClickListener;
+    private Animator.AnimatorListener mAnimatorListener = new Animator.AnimatorListener() {
+        @Override
+        public void onAnimationStart(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            if (mOnFavorViewClickListener != null) {
+                mOnFavorViewClickListener.onFavorClick(isLikeSelected);
+            }
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+
+        }
+    };
+
     public FavorView(Context context) {
         this(context, null);
     }
@@ -42,6 +69,12 @@ public class FavorView extends ViewGroup {
     public FavorView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.FavorView);
+        try {
+            isLikeSelected = ta.getBoolean(R.styleable.FavorView_likeSelected, false);
+        } finally {
+            ta.recycle();
+        }
         createLikeView();
     }
 
@@ -162,11 +195,11 @@ public class FavorView extends ViewGroup {
         mLikeShining.animate().scaleX(0.6f).scaleY(0.6f).setDuration(200).start();
     }
 
-    private void toggle() {
+    public void toggle() {
         setLikeSelected(!isLikeSelected);
     }
 
-    private void setLikeSelected(boolean selected) {
+    public void setLikeSelected(boolean selected) {
         if (isLikeSelected != selected) {
             isLikeSelected = selected;
 
@@ -215,6 +248,7 @@ public class FavorView extends ViewGroup {
 
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.playTogether(likeSelectedAnimator, likeShiningAnimator);
+        animatorSet.addListener(mAnimatorListener);
         animatorSet.start();
         mLikeRing.startAnimatorSet();
     }
@@ -229,6 +263,15 @@ public class FavorView extends ViewGroup {
                 mLikeSelected.setScaleY(scale);
             }
         });
+        likeSelectedAnimator.addListener(mAnimatorListener);
         likeSelectedAnimator.start();
+    }
+
+    public void setOnFavorViewClickListener(OnFavorViewClickListener onFavorViewClickListener) {
+        mOnFavorViewClickListener = onFavorViewClickListener;
+    }
+
+    public interface OnFavorViewClickListener {
+        void onFavorClick(boolean checked);
     }
 }

@@ -11,12 +11,15 @@
     tools:context="io.julian.imitatecoolui.sample.MainActivity">
 
     <io.julian.imitate.jikelike.widget.FavorView
+        android:id="@+id/favorView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        app:likeSelected="false"/>
 
     <io.julian.imitate.jikelike.widget.PopTextView
+        android:id="@+id/popTextView"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        app:afterNum="25"
-        app:beforeNum="11"/>
+        app:afterNum="1101"
+        app:beforeNum="1100"/>
 </LinearLayout>

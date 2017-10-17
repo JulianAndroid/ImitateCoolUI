@@ -5,4 +5,8 @@
         <attr name="beforeNum" format="integer"/>
         <attr name="afterNum" format="integer"/>
     </declare-styleable>
+
+    <declare-styleable name="FavorView">
+        <attr name="likeSelected" format="boolean"/>
+    </declare-styleable>
 </resources>
