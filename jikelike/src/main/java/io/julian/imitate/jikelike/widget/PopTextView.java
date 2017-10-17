@@ -54,8 +54,6 @@ public class PopTextView extends View {
 
     private float mRatio;
 
-    private OnPopTextViewClickListener mOnPopTextViewClickListener;
-
     public PopTextView(Context context) {
         this(context, null);
     }
@@ -206,10 +204,6 @@ public class PopTextView extends View {
 
         if (mRatio == 1.0f) {
             handleNumber(mAfterNum, mBeforeNum);
-            if (mOnPopTextViewClickListener != null) {
-                mOnPopTextViewClickListener.onPopTextClick(mAfterNum, mBeforeNum);
-            }
-
         }
     }
 
@@ -233,13 +227,5 @@ public class PopTextView extends View {
         });
         animator.setDuration(300);
         animator.start();
-    }
-
-    public void setOnPopTextViewClickListener(OnPopTextViewClickListener onPopTextViewClickListener) {
-        mOnPopTextViewClickListener = onPopTextViewClickListener;
-    }
-
-    public interface OnPopTextViewClickListener {
-        void onPopTextClick(int beforeNum, int afterNum);
     }
 }

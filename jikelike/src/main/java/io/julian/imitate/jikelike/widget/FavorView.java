@@ -33,30 +33,7 @@ public class FavorView extends ViewGroup {
 
     private boolean isLikeSelected;
 
-    private OnFavorViewClickListener mOnFavorViewClickListener;
-    private Animator.AnimatorListener mAnimatorListener = new Animator.AnimatorListener() {
-        @Override
-        public void onAnimationStart(Animator animation) {
-
-        }
-
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            if (mOnFavorViewClickListener != null) {
-                mOnFavorViewClickListener.onFavorClick(isLikeSelected);
-            }
-        }
-
-        @Override
-        public void onAnimationCancel(Animator animation) {
-
-        }
-
-        @Override
-        public void onAnimationRepeat(Animator animation) {
-
-        }
-    };
+    private PopTextView mPopTextView;
 
     public FavorView(Context context) {
         this(context, null);
@@ -248,7 +225,6 @@ public class FavorView extends ViewGroup {
 
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.playTogether(likeSelectedAnimator, likeShiningAnimator);
-        animatorSet.addListener(mAnimatorListener);
         animatorSet.start();
         mLikeRing.startAnimatorSet();
     }
@@ -263,15 +239,6 @@ public class FavorView extends ViewGroup {
                 mLikeSelected.setScaleY(scale);
             }
         });
-        likeSelectedAnimator.addListener(mAnimatorListener);
         likeSelectedAnimator.start();
-    }
-
-    public void setOnFavorViewClickListener(OnFavorViewClickListener onFavorViewClickListener) {
-        mOnFavorViewClickListener = onFavorViewClickListener;
-    }
-
-    public interface OnFavorViewClickListener {
-        void onFavorClick(boolean checked);
     }
 }

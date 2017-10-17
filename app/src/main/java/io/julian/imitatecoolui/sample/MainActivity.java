@@ -20,19 +20,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mFavorView = (FavorView) findViewById(R.id.favorView);
-        mFavorView.setOnFavorViewClickListener(new FavorView.OnFavorViewClickListener() {
-            @Override
-            public void onFavorClick(boolean checked) {
-                Log.d(TAG, "onFavorClick: " + checked);
-            }
-        });
-
         mPopTextView = (PopTextView) findViewById(R.id.popTextView);
-        mPopTextView.setOnPopTextViewClickListener(new PopTextView.OnPopTextViewClickListener() {
-            @Override
-            public void onPopTextClick(int beforeNum, int afterNum) {
-                Log.d(TAG, "onPopTextClick: beforeNum: " + beforeNum + ", afterNum: " + afterNum);
-            }
-        });
     }
 }
