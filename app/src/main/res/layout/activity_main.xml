@@ -16,7 +16,7 @@
 
     <io.julian.imitate.jikelike.widget.PopTextView
         android:layout_width="wrap_content"
-        android:layout_height="100dp"
+        android:layout_height="50dp"
         app:afterNum="25"
         app:beforeNum="11"/>
 </LinearLayout>

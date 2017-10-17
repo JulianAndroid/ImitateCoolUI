@@ -1,6 +1,5 @@
 package io.julian.imitate.jikelike.widget;
 
-import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -25,12 +24,13 @@ public class PopTextView extends View {
 
     private static final String TAG = "PopTextView";
 
-    private static final int LETTER_SPACING = DimenUtils.spTopx(4);
-    private static final int VERTICAL_SPACING = DimenUtils.spTopx(10);
+    private static final int LETTER_SPACING = DimenUtils.spToPx(4);
+    private static final int VERTICAL_SPACING = DimenUtils.dpToPx(10);
+    private static final int TEXT_SIZE = DimenUtils.spToPx(18);
     private static final int TEXT_COLOR_ALPHA = 255;
-    private static final int TEXT_COLOR_R = 0;
-    private static final int TEXT_COLOR_G = 0;
-    private static final int TEXT_COLOR_B = 0;
+    private static final int TEXT_COLOR_R = 191;
+    private static final int TEXT_COLOR_G = 191;
+    private static final int TEXT_COLOR_B = 191;
 
     // 相同部分的文字
     private String mSameText;
@@ -67,7 +67,7 @@ public class PopTextView extends View {
 
         mSameTextPaint = new Paint();
         mSameTextPaint.setAntiAlias(true);
-        mSameTextPaint.setTextSize(DimenUtils.spTopx(20));
+        mSameTextPaint.setTextSize(TEXT_SIZE);
         mSameTextPaint.setColor(Color.argb(TEXT_COLOR_ALPHA, TEXT_COLOR_R, TEXT_COLOR_G, TEXT_COLOR_B));
         mBeforeDiffTextPaint = new Paint(mSameTextPaint);
         mAfterDiffTextPaint = new Paint(mSameTextPaint);
@@ -132,7 +132,10 @@ public class PopTextView extends View {
         final int widthSize;
         final int heightSize;
         if (widthMode == MeasureSpec.AT_MOST) {
-            int diffWidth = Math.max(mBeforeDiffTextRect.width(), mAfterDiffTextRect.width());
+            Rect bounds = mBeforeDiffTextRect.width() > mAfterDiffTextRect.width()
+                    ? mBeforeDiffTextRect : mAfterDiffTextRect;
+            bounds.right += LETTER_SPACING;
+            int diffWidth = bounds.width();
             widthSize = getPaddingLeft() + getPaddingRight() + mSameTextRect.width()
                     + (diffWidth > 0 ? diffWidth + LETTER_SPACING : 0);
         } else {
@@ -160,9 +163,9 @@ public class PopTextView extends View {
 
         final int alpha = (int) (mRatio * 255);
         if (!isEmpty(mSameText)) {
-            final int x = pleft;
+            // final int x = pleft;
             final int y = (heightSize - ptop - pbottom + mSameTextRect.height()) / 2;
-            canvas.drawText(mSameText, x, y, mSameTextPaint);
+            canvas.drawText(mSameText, /*x*/ pleft, y, mSameTextPaint);
         }
         if (mAfterNum > mBeforeNum) {
             final int offsetY = (int) (mDistance * mRatio);
@@ -198,6 +201,10 @@ public class PopTextView extends View {
                 canvas.drawText(mAfterDiffText, x, y + offsetY, mAfterDiffTextPaint);
             }
         }
+
+        if (mRatio == 1.0f) {
+            handleNumber(mAfterNum, mBeforeNum);
+        }
     }
 
     @Override
@@ -218,27 +225,7 @@ public class PopTextView extends View {
                 invalidate();
             }
         });
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        animator.setDuration(1000);
+        animator.setDuration(300);
         animator.start();
     }
 }

@@ -12,7 +12,7 @@ public class DimenUtils {
         return (int) (Resources.getSystem().getDisplayMetrics().density * dpi);
     }
 
-    public static int spTopx(float spValue) {
+    public static int spToPx(float spValue) {
         final float fontScale = Resources.getSystem().getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5f);
     }
