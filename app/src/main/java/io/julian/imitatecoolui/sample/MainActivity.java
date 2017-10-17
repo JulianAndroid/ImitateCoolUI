@@ -21,5 +21,8 @@ public class MainActivity extends AppCompatActivity {
 
         mFavorView = (FavorView) findViewById(R.id.favorView);
         mPopTextView = (PopTextView) findViewById(R.id.popTextView);
+
+        mFavorView.setPopTextView(mPopTextView);
+        mPopTextView.setFavorView(mFavorView);
     }
 }

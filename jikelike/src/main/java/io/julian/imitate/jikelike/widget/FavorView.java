@@ -77,6 +77,10 @@ public class FavorView extends ViewGroup {
         }
     }
 
+    public void setPopTextView(PopTextView popTextView) {
+        mPopTextView = popTextView;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
@@ -160,6 +164,9 @@ public class FavorView extends ViewGroup {
                 break;
             case MotionEvent.ACTION_UP:
                 toggle();
+                if (mPopTextView != null) {
+                    mPopTextView.animatePop();
+                }
                 break;
         }
         return true;

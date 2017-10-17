@@ -53,6 +53,7 @@ public class PopTextView extends View {
     private int mDistance;
 
     private float mRatio;
+    private FavorView mFavorView;
 
     public PopTextView(Context context) {
         this(context, null);
@@ -211,11 +212,14 @@ public class PopTextView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP) {
             animatePop();
+            if (mFavorView != null) {
+                mFavorView.toggle();
+            }
         }
         return true;
     }
 
-    private void animatePop() {
+    public void animatePop() {
         if (isEmpty(mBeforeDiffText) || isEmpty(mAfterDiffText)) return;
         ValueAnimator animator = ValueAnimator.ofFloat(0, 1.0f);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -227,5 +231,9 @@ public class PopTextView extends View {
         });
         animator.setDuration(300);
         animator.start();
+    }
+
+    public void setFavorView(FavorView favorView) {
+        mFavorView = favorView;
     }
 }
